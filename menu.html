@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu — Forkful</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="menu">
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark">Fork</span>ful</a>
+    <nav class="nav-links">
+      <a href="index.html" data-nav="home"><span class="link-text">Home</span></a>
+      <a href="menu.html" data-nav="menu"><span class="link-text">Menu</span></a>
+      <a href="cart.html" data-nav="cart" class="cart-pill">
+        Cart <span class="cart-count" data-cart-count>0</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom: 0;">
+    <div class="section-head">
+      <div>
+        <span class="section-eyebrow">The full spread</span>
+        <h2>Menu</h2>
+      </div>
+    </div>
+    <div class="cat-row" id="menu-cat-row"></div>
+  </section>
+
+  <section class="section">
+    <div class="dish-grid" id="menu-dish-grid"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  Forkful · demo food-ordering app · built for portfolio &amp; learning purposes
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>
+  const grid = document.getElementById('menu-dish-grid');
+  const catRow = document.getElementById('menu-cat-row');
+
+  const params = new URLSearchParams(window.location.search);
+  const initialCategory = params.get('category') || 'All';
+
+  function selectChip(cat) {
+    catRow.querySelectorAll('.cat-chip').forEach(c => {
+      c.classList.toggle('selected', c.textContent === cat);
+    });
+  }
+
+  renderCategoryChips(catRow, (cat) => renderMenuGrid(grid, cat));
+  renderMenuGrid(grid, initialCategory);
+  selectChip(initialCategory);
+</script>
+</body>
+</html>
