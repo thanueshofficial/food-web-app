@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: forkful
-          image: <YOUR_DOCKERHUB_USERNAME>/forkful-app:latest
+          image: thanuesh13/food-app:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
