@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Urban Tiffin — order food online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #1A1410;
+    --panel: #241D17;
+    --panel2: #2C2319;
+    --cream: #F5EFE6;
+    --muted: #A99A8C;
+    --turmeric: #F2A93B;
+    --chili: #D64545;
+    --cardamom: #6B8F5E;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Work Sans', sans-serif;
+    padding-bottom: 40px;
+    min-height: 100vh;
+  }
+  h1, h2, h3, .display { font-family: 'Fraunces', serif; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--turmeric); color: #1A1410; }
+  button { font-family: inherit; }
+
+  /* ---------- header / nav ---------- */
+  header {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(26,20,16,0.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(245,239,230,0.08);
+  }
+  .nav-inner {
+    max-width: 1080px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  }
+  .logo { font-size: 22px; font-weight: 700; letter-spacing: 0.01em; }
+  .logo em { font-style: normal; color: var(--turmeric); }
+  .tagline { font-size: 11px; color: var(--muted); margin-top: -2px; }
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-link {
+    position: relative; padding: 9px 16px; border-radius: 999px; font-size: 14px;
+    color: var(--muted); background: transparent; border: none; cursor: pointer;
+  }
+  .nav-link.active { background: var(--panel2); color: var(--cream); font-weight: 600; }
+  .nav-badge {
+    position: absolute; top: 2px; right: 6px;
+    background: var(--chili); color: #fff; font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; width: 16px; height: 16px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- page switching ---------- */
+  .page { display: none; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .page.active { display: block; animation: fade 0.2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ---------- hero (home page) ---------- */
+  .hero { padding: 56px 0 40px; display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+  .hero-text { flex: 1; min-width: 280px; }
+  .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--cardamom); margin-bottom: 14px; }
+  h1.headline { font-size: 48px; line-height: 1.08; margin: 0 0 16px; font-weight: 700; }
+  .hero-sub { color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 420px; margin: 0 0 26px; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--chili); color: #fff; font-weight: 600;
+    border: none; border-radius: 999px; padding: 14px 26px;
+    font-size: 15px; cursor: pointer;
+  }
+  .cta-outline {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent; color: var(--cream); font-weight: 600;
+    border: 1px solid rgba(245,239,230,0.25); border-radius: 999px; padding: 14px 26px;
+    font-size: 15px; cursor: pointer; margin-left: 12px;
+  }
+  .hero-badge {
+    flex-shrink: 0; width: 180px; height: 180px; border-radius: 50%;
+    background: var(--panel2); display: flex; align-items: center; justify-content: center;
+    font-size: 72px; border: 1px solid rgba(245,239,230,0.08);
+  }
+  .how-it-works { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 10px 0 50px; }
+  .step-card { background: var(--panel); border-radius: var(--radius); padding: 20px; border: 1px solid rgba(245,239,230,0.06); }
+  .step-num { color: var(--turmeric); font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin-bottom: 8px; }
+  .step-card h3 { margin: 0 0 6px; font-size: 16px; }
+  .step-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ---------- category tabs ---------- */
+  .tabs { padding: 20px 0 4px; display: flex; gap: 10px; overflow-x: auto; }
+  .tab {
+    white-space: nowrap; padding: 9px 18px; border-radius: 999px;
+    font-size: 14px; border: 1px solid rgba(245,239,230,0.15);
+    background: transparent; color: var(--muted); cursor: pointer;
+  }
+  .tab.active { background: var(--turmeric); border-color: var(--turmeric); color: #1A1410; font-weight: 600; }
+
+  /* ---------- menu grid ---------- */
+  .menu-grid { padding: 20px 0 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+  .item-card { background: var(--panel); border: 1px solid rgba(245,239,230,0.06); border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; }
+  .item-emoji { height: 92px; display: flex; align-items: center; justify-content: center; font-size: 46px; background: var(--panel2); border-radius: 10px; margin-bottom: 14px; }
+  .item-name { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+  .item-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin: 0 0 14px; flex: 1; }
+  .item-footer { display: flex; align-items: center; justify-content: space-between; }
+  .item-price { font-size: 15px; font-weight: 600; }
+  .spice { font-size: 11px; margin-left: 4px; }
+  .add-btn { background: transparent; color: var(--turmeric); border: 1px solid var(--turmeric); border-radius: 999px; padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .qty-stepper { display: flex; align-items: center; gap: 10px; background: var(--turmeric); border-radius: 999px; padding: 4px 6px; }
+  .qty-stepper button { width: 24px; height: 24px; border-radius: 50%; border: none; background: #1A1410; color: var(--turmeric); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .qty-stepper span { color: #1A1410; font-weight: 700; font-size: 13px; min-width: 14px; text-align: center; }
+
+  .floating-cart {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--chili); color: #fff; font-weight: 600; font-size: 14px;
+    border: none; border-radius: 999px; padding: 14px 26px; cursor: pointer;
+    display: none; align-items: center; gap: 10px; z-index: 20;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .floating-cart.show { display: inline-flex; }
+
+  /* ---------- cart page ---------- */
+  .page-head { padding: 32px 0 6px; }
+  .page-head h2 { font-size: 30px; margin: 0 0 6px; }
+  .page-head p { color: var(--muted); font-size: 14px; margin: 0; }
+  .cart-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; padding: 24px 0 50px; align-items: start; }
+  .cart-list { background: var(--panel); border-radius: var(--radius); border: 1px solid rgba(245,239,230,0.06); padding: 8px 20px; }
+  .cart-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(245,239,230,0.06); }
+  .cart-row:last-child { border-bottom: none; }
+  .cart-row .item-emoji { width: 52px; height: 52px; font-size: 24px; margin: 0; flex-shrink: 0; }
+  .cart-row-info { flex: 1; }
+  .cart-row-info .name { font-size: 15px; font-weight: 500; }
+  .cart-row-info .price { font-size: 12.5px; color: var(--muted); }
+  .remove-link { font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; text-decoration: underline; margin-top: 4px; }
+  .empty-state { text-align: center; color: var(--muted); font-size: 14px; padding: 60px 0; }
+  .empty-state .cta-btn { margin-top: 18px; }
+
+  .summary-card { background: var(--panel); border-radius: var(--radius); border: 1px solid rgba(245,239,230,0.06); padding: 20px; position: sticky; top: 90px; }
+  .summary-card h3 { margin: 0 0 14px; font-size: 17px; }
+  .totals-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+  .totals-row.grand { color: var(--cream); font-size: 18px; font-weight: 600; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(245,239,230,0.08); }
+  .full-btn { width: 100%; margin-top: 16px; background: var(--chili); color: #fff; border: none; border-radius: 999px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .full-btn:disabled { background: rgba(245,239,230,0.1); color: var(--muted); cursor: not-allowed; }
+  .full-btn.secondary { background: transparent; color: var(--cream); border: 1px solid rgba(245,239,230,0.2); }
+
+  /* ---------- billing page ---------- */
+  .billing-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; padding: 24px 0 60px; align-items: start; }
+  .form-card { background: var(--panel); border-radius: var(--radius); border: 1px solid rgba(245,239,230,0.06); padding: 24px; }
+  .form-card h3 { margin: 0 0 16px; font-size: 17px; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .field input, .field textarea {
+    width: 100%; background: var(--panel2); border: 1px solid rgba(245,239,230,0.1);
+    border-radius: 8px; padding: 11px 14px; color: var(--cream); font-size: 14px; font-family: inherit;
+  }
+  .field input:focus, .field textarea:focus { outline: 1px solid var(--turmeric); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pay-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pay-option {
+    flex: 1; min-width: 120px; border: 1px solid rgba(245,239,230,0.12); border-radius: 10px;
+    padding: 12px; cursor: pointer; text-align: center; font-size: 13px; color: var(--muted);
+  }
+  .pay-option.selected { border-color: var(--turmeric); color: var(--cream); background: var(--panel2); }
+  .pay-option input { display: none; }
+
+  /* ---------- confirmation page ---------- */
+  .confirm-wrap { text-align: center; padding: 90px 0 100px; }
+  .confirm-badge { font-size: 64px; margin-bottom: 20px; }
+  .confirm-wrap h2 { font-size: 30px; margin: 0 0 10px; }
+  .confirm-wrap p { color: var(--muted); font-size: 15px; margin: 0 auto 8px; max-width: 380px; }
+  .order-id { display: inline-block; margin: 18px 0 26px; background: var(--panel); border: 1px solid rgba(245,239,230,0.08); border-radius: 999px; padding: 10px 22px; font-size: 14px; }
+
+  footer { max-width: 1080px; margin: 0 auto; padding: 24px 20px; border-top: 1px solid rgba(245,239,230,0.08); color: var(--muted); font-size: 13px; text-align: center; }
+
+  @media (max-width: 720px) {
+    h1.headline { font-size: 32px; }
+    .how-it-works { grid-template-columns: 1fr; }
+    .cart-layout, .billing-layout { grid-template-columns: 1fr; }
+    .summary-card { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div>
+      <div class="logo">Urban <em>Tiffin</em></div>
+      <div class="tagline">home-style meals, delivered hot</div>
+    </div>
+    <nav class="nav-links">
+      <button class="nav-link" data-nav="home" onclick="navigate('home')">Home</button>
+      <button class="nav-link" data-nav="menu" onclick="navigate('menu')">Menu</button>
+      <button class="nav-link" data-nav="cart" onclick="navigate('cart')">
+        Cart
+        <span class="nav-badge" id="navCartBadge" style="display:none">0</span>
+      </button>
+      <button class="nav-link" data-nav="billing" onclick="navigate('billing')">Billing</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ---------------- HOME ---------------- -->
+<section class="page" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="eyebrow">Open now &middot; delivering in 25&ndash;35 min</div>
+      <h1 class="headline">Today's tiffin,<br/>made the way home does.</h1>
+      <p class="hero-sub">Fresh thalis, curries and street-food favourites, cooked to order and packed in reusable tiffin boxes.</p>
+      <button class="cta-btn" onclick="navigate('menu')">See today's menu</button>
+      <button class="cta-outline" onclick="navigate('cart')">View cart</button>
+    </div>
+    <div class="hero-badge">🍛</div>
+  </div>
+
+  <div class="how-it-works">
+    <div class="step-card"><div class="step-num">01</div><h3>Pick your dishes</h3><p>Browse the menu by category and add whatever looks good.</p></div>
+    <div class="step-card"><div class="step-num">02</div><h3>Review your cart</h3><p>Adjust quantities and check the total before you commit.</p></div>
+    <div class="step-card"><div class="step-num">03</div><h3>Enter delivery details</h3><p>Add your address and payment preference on the billing page.</p></div>
+  </div>
+</section>
+
+<!-- ---------------- MENU ---------------- -->
+<section class="page" id="page-menu">
+  <div class="page-head"><h2>Today's menu</h2><p>Everything is cooked fresh after you order.</p></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<!-- ---------------- CART ---------------- -->
+<section class="page" id="page-cart">
+  <div class="page-head"><h2>Your cart</h2><p>Double-check quantities before moving to billing.</p></div>
+  <div id="cartPageBody"></div>
+</section>
+
+<!-- ---------------- BILLING ---------------- -->
+<section class="page" id="page-billing">
+  <div class="page-head"><h2>Delivery and payment</h2><p>Tell us where to send it.</p></div>
+  <div class="billing-layout">
+    <form class="form-card" id="billingForm" onsubmit="placeOrder(event)">
+      <h3>Delivery details</h3>
+      <div class="field-row">
+        <div class="field"><label>Full name</label><input type="text" required placeholder="Your name" /></div>
+        <div class="field"><label>Phone number</label><input type="tel" required placeholder="10-digit mobile number" pattern="[0-9]{10}" /></div>
+      </div>
+      <div class="field"><label>Delivery address</label><textarea required rows="3" placeholder="Flat / street / area / city"></textarea></div>
+
+      <h3 style="margin-top:24px;">Payment method</h3>
+      <div class="pay-options" id="payOptions">
+        <label class="pay-option selected"><input type="radio" name="pay" value="cod" checked />Cash on delivery</label>
+        <label class="pay-option"><input type="radio" name="pay" value="upi" />UPI</label>
+        <label class="pay-option"><input type="radio" name="pay" value="card" />Card</label>
+      </div>
+
+      <button type="submit" class="full-btn" id="placeOrderBtn" style="margin-top:24px;">Place order</button>
+    </form>
+
+    <div class="summary-card">
+      <h3>Order summary</h3>
+      <div id="billingSummaryLines"></div>
+      <div class="totals-row"><span>Subtotal</span><span class="mono" id="billSubtotal">₹0</span></div>
+      <div class="totals-row"><span>Delivery</span><span class="mono" id="billDelivery">₹0</span></div>
+      <div class="totals-row grand"><span>Total</span><span class="mono" id="billTotal">₹0</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------------- CONFIRMATION ---------------- -->
+<section class="page" id="page-confirmation">
+  <div class="confirm-wrap">
+    <div class="confirm-badge">✅</div>
+    <h2>Order placed</h2>
+    <p>Your tiffin is being packed. You'll get a call once it's out for delivery.</p>
+    <div class="order-id mono" id="orderIdDisplay">Order #000000</div>
+    <div><button class="cta-btn" onclick="navigate('home')">Back to home</button></div>
+  </div>
+</section>
+
+<footer>Urban Tiffin — a demo food ordering page. No real orders are placed and no payment is processed.</footer>
+
+<button class="floating-cart" id="floatingCart" onclick="navigate('cart')">View cart &middot; <span id="floatingCartTotal">₹0</span></button>
+
+<script>
+  const MENU = [
+    { id: 1, name: 'Paneer Butter Masala', desc: 'Cottage cheese in a rich tomato-cashew gravy, served with two rotis.', price: 220, cat: 'Mains', emoji: '🍛', spice: 1 },
+    { id: 2, name: 'Chicken Biryani', desc: 'Slow-cooked basmati layered with spiced chicken, served with raita.', price: 260, cat: 'Mains', emoji: '🍚', spice: 2 },
+    { id: 3, name: 'Masala Dosa', desc: 'Crisp rice crepe filled with spiced potato, served with sambar and chutney.', price: 130, cat: 'Mains', emoji: '🥞', spice: 1 },
+    { id: 4, name: 'Chilli Paneer', desc: 'Wok-tossed paneer in a sweet-spicy soy glaze, capsicum and onion.', price: 190, cat: 'Starters', emoji: '🌶️', spice: 3 },
+    { id: 5, name: 'Chicken 65', desc: 'Deep-fried curry-leaf chicken bites with a fiery tempering.', price: 210, cat: 'Starters', emoji: '🍗', spice: 3 },
+    { id: 6, name: 'Vegetable Samosa (2 pc)', desc: 'Golden pastry parcels with spiced potato and pea filling.', price: 60, cat: 'Starters', emoji: '🥟', spice: 1 },
+    { id: 7, name: 'Butter Naan', desc: 'Tandoor-baked leavened bread, brushed with ghee.', price: 45, cat: 'Breads', emoji: '🫓', spice: 0 },
+    { id: 8, name: 'Tandoori Roti', desc: 'Whole-wheat flatbread baked in a clay oven.', price: 25, cat: 'Breads', emoji: '🫓', spice: 0 },
+    { id: 9, name: 'Jeera Rice', desc: 'Basmati rice tempered with cumin and ghee.', price: 110, cat: 'Rice', emoji: '🍚', spice: 0 },
+    { id: 10, name: 'Curd Rice', desc: 'Comfort rice folded with curd, curry leaves and pomegranate.', price: 100, cat: 'Rice', emoji: '🍚', spice: 0 },
+    { id: 11, name: 'Gulab Jamun (2 pc)', desc: 'Warm milk-solid dumplings soaked in cardamom syrup.', price: 70, cat: 'Desserts', emoji: '🍮', spice: 0 },
+    { id: 12, name: 'Gajar Halwa', desc: 'Slow-cooked carrot pudding with ghee, nuts and cardamom.', price: 90, cat: 'Desserts', emoji: '🍮', spice: 0 },
+    { id: 13, name: 'Masala Chai', desc: 'Spiced milk tea, brewed strong.', price: 30, cat: 'Drinks', emoji: '☕', spice: 0 },
+    { id: 14, name: 'Sweet Lassi', desc: 'Chilled churned yogurt drink, lightly sweetened.', price: 60, cat: 'Drinks', emoji: '🥤', spice: 0 }
+  ]
+
+  const CATEGORIES = ['All', 'Starters', 'Mains', 'Breads', 'Rice', 'Desserts', 'Drinks']
+  const DELIVERY_FEE = 35
+  const PAGES = ['home', 'menu', 'cart', 'billing', 'confirmation']
+
+  let activeCategory = 'All'
+  let cart = {}
+
+  /* ---------------- navigation ---------------- */
+  function navigate(page) {
+    if (!PAGES.includes(page)) page = 'home'
+    PAGES.forEach(p => document.getElementById('page-' + p).classList.toggle('active', p === page))
+    document.querySelectorAll('.nav-link').forEach(btn => btn.classList.toggle('active', btn.dataset.nav === page))
+    window.location.hash = page
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' })
+    if (page === 'cart') renderCartPage()
+    if (page === 'billing') renderBillingSummary()
+    updateFloatingCart(page)
+  }
+
+  window.addEventListener('hashchange', () => {
+    const page = window.location.hash.replace('#', '') || 'home'
+    navigate(page)
+  })
+
+  /* ---------------- menu rendering ---------------- */
+  function renderTabs() {
+    const tabs = document.getElementById('tabs')
+    tabs.innerHTML = CATEGORIES.map(c =>
+      `<button class="tab ${c === activeCategory ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>`
+    ).join('')
+  }
+
+  function setCategory(cat) {
+    activeCategory = cat
+    renderTabs()
+    renderMenuGrid()
+  }
+
+  function spiceLabel(level) {
+    if (level === 0) return ''
+    return '<span class="spice">' + '🌶️'.repeat(level) + '</span>'
+  }
+
+  function renderMenuGrid() {
+    const grid = document.getElementById('menuGrid')
+    const items = activeCategory === 'All' ? MENU : MENU.filter(i => i.cat === activeCategory)
+    grid.innerHTML = items.map(item => {
+      const qty = cart[item.id]?.qty || 0
+      const control = qty > 0
+        ? `<div class="qty-stepper">
+             <button onclick="changeQty(${item.id}, -1)">-</button>
+             <span>${qty}</span>
+             <button onclick="changeQty(${item.id}, 1)">+</button>
+           </div>`
+        : `<button class="add-btn" onclick="changeQty(${item.id}, 1)">Add</button>`
+      return `
+        <div class="item-card">
+          <div class="item-emoji">${item.emoji}</div>
+          <h3 class="item-name">${item.name}${spiceLabel(item.spice)}</h3>
+          <p class="item-desc">${item.desc}</p>
+          <div class="item-footer">
+            <span class="item-price mono">₹${item.price}</span>
+            ${control}
+          </div>
+        </div>`
+    }).join('')
+  }
+
+  function changeQty(id, delta) {
+    const item = MENU.find(m => m.id === id)
+    const current = cart[id]?.qty || 0
+    const next = Math.max(0, current + delta)
+    if (next === 0) delete cart[id]
+    else cart[id] = { ...item, qty: next }
+    renderMenuGrid()
+    refreshCartEverywhere()
+  }
+
+  function removeItem(id) {
+    delete cart[id]
+    refreshCartEverywhere()
+  }
+
+  function cartEntries() { return Object.values(cart) }
+  function cartCount() { return cartEntries().reduce((s, i) => s + i.qty, 0) }
+  function cartSubtotal() { return cartEntries().reduce((s, i) => s + i.price * i.qty, 0) }
+
+  function refreshCartEverywhere() {
+    const count = cartCount()
+    const badge = document.getElementById('navCartBadge')
+    badge.textContent = count
+    badge.style.display = count > 0 ? 'flex' : 'none'
+    if (document.getElementById('page-cart').classList.contains('active')) renderCartPage()
+    if (document.getElementById('page-billing').classList.contains('active')) renderBillingSummary()
+    const currentPage = PAGES.find(p => document.getElementById('page-' + p).classList.contains('active'))
+    updateFloatingCart(currentPage)
+  }
+
+  function updateFloatingCart(currentPage) {
+    const fc = document.getElementById('floatingCart')
+    const count = cartCount()
+    if (count > 0 && currentPage === 'menu') {
+      fc.classList.add('show')
+      document.getElementById('floatingCartTotal').textContent = '₹' + cartSubtotal()
+    } else {
+      fc.classList.remove('show')
+    }
+  }
+
+  /* ---------------- cart page ---------------- */
+  function renderCartPage() {
+    const body = document.getElementById('cartPageBody')
+    const entries = cartEntries()
+
+    if (entries.length === 0) {
+      body.innerHTML = `
+        <div class="empty-state">
+          Your tiffin is empty.<br/>Add something from today's menu.
+          <div><button class="cta-btn" onclick="navigate('menu')">Browse menu</button></div>
+        </div>`
+      return
+    }
+
+    const subtotal = cartSubtotal()
+    const delivery = DELIVERY_FEE
+    const total = subtotal + delivery
+
+    const rows = entries.map(item => `
+      <div class="cart-row">
+        <div class="item-emoji">${item.emoji}</div>
+        <div class="cart-row-info">
+          <div class="name">${item.name}</div>
+          <div class="price mono">₹${item.price} &times; ${item.qty} = ₹${item.price * item.qty}</div>
+          <button class="remove-link" onclick="removeItem(${item.id})">Remove</button>
+        </div>
+        <div class="qty-stepper">
+          <button onclick="changeQty(${item.id}, -1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="changeQty(${item.id}, 1)">+</button>
+        </div>
+      </div>`).join('')
+
+    body.innerHTML = `
+      <div class="cart-layout">
+        <div class="cart-list">${rows}</div>
+        <div class="summary-card">
+          <h3>Order summary</h3>
+          <div class="totals-row"><span>Subtotal</span><span class="mono">₹${subtotal}</span></div>
+          <div class="totals-row"><span>Delivery</span><span class="mono">₹${delivery}</span></div>
+          <div class="totals-row grand"><span>Total</span><span class="mono">₹${total}</span></div>
+          <button class="full-btn" onclick="navigate('billing')">Continue to billing</button>
+          <button class="full-btn secondary" onclick="navigate('menu')">Add more items</button>
+        </div>
+      </div>`
+  }
+
+  /* ---------------- billing page ---------------- */
+  function renderBillingSummary() {
+    const entries = cartEntries()
+    const lines = document.getElementById('billingSummaryLines')
+    const subtotal = cartSubtotal()
+    const delivery = entries.length > 0 ? DELIVERY_FEE : 0
+    const total = subtotal + delivery
+
+    lines.innerHTML = entries.length === 0
+      ? '<p style="color:var(--muted); font-size:13px;">Your cart is empty — add items from the menu first.</p>'
+      : entries.map(i => `
+          <div class="totals-row"><span>${i.name} &times; ${i.qty}</span><span class="mono">₹${i.price * i.qty}</span></div>
+        `).join('')
+
+    document.getElementById('billSubtotal').textContent = '₹' + subtotal
+    document.getElementById('billDelivery').textContent = '₹' + delivery
+    document.getElementById('billTotal').textContent = '₹' + total
+    document.getElementById('placeOrderBtn').disabled = entries.length === 0
+  }
+
+  document.getElementById('payOptions').addEventListener('click', (e) => {
+    const label = e.target.closest('.pay-option')
+    if (!label) return
+    document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('selected'))
+    label.classList.add('selected')
+    label.querySelector('input').checked = true
+  })
+
+  function placeOrder(e) {
+    e.preventDefault()
+    if (cartEntries().length === 0) return
+    const orderId = Math.floor(100000 + Math.random() * 900000)
+    document.getElementById('orderIdDisplay').textContent = 'Order #' + orderId
+    cart = {}
+    refreshCartEverywhere()
+    navigate('confirmation')
+  }
+
+  /* ---------------- init ---------------- */
+  renderTabs()
+  renderMenuGrid()
+  const initialPage = window.location.hash.replace('#', '') || 'home'
+  navigate(initialPage)
+</script>
+
+</body>
+</html>
