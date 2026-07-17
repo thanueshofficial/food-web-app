@@ -3,12 +3,13 @@ kind: Ingress
 metadata:
   name: forkful-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: forkful.example.com
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
