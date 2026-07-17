@@ -46,10 +46,10 @@ aws iam create-policy \
 Create the IAM Service Account (IRSA) 
 ```
 eksctl create iamserviceaccount \
-  --cluster wanderblog-eks-cluster \
+  --cluster food-app\
   --namespace kube-system \
   --name aws-load-balancer-controller \
-  --attach-policy-arn arn:aws:iam::<ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn arn:aws:iam::746244690537:policy/AWSLoadBalancerControllerIAMPolicy \
   --override-existing-serviceaccounts \
   --approve \
   --region us-east-1
@@ -72,11 +72,11 @@ Install the AWS Load Balancer Controller
 ```
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set clusterName=wanderblog-eks-cluster \
+  --set clusterName=food-app \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set region=us-east-1 \
-  --set vpcId=<YOUR_VPC_ID>
+  --set vpcId=vpc-0cd9f7871adbf6915
 ```
 
 Verify the Controller
