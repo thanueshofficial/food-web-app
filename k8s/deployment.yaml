@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: forkful
-          image: thanuesh13/food-app:18
+          image: thanuesh13/food-app:19
           imagePullPolicy: Always
           ports:
             - containerPort: 80
