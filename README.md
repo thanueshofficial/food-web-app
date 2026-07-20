@@ -1,4 +1,4 @@
-# Forkful — Food Ordering Web App
+# Forkful — Food Ordering Webb App
 
 A simple, good-looking food ordering frontend: browse the menu, add items to
 a cart, and check out through a billing page that prints a receipt. Pure
